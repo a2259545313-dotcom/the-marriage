@@ -187,7 +187,7 @@ function Character (gender)
 		// Mouse pointer touches character
 		if(isPointInsideRect(mMousePosition, this.rect))
 		{
-			if(this.gender == Gender.Female){
+			if(this.gender === Gender.Female){
 				mMale.expand(MaleGrowthSpeedOnCharacterTouch * mDeltaTime)
 			} else{
 				mFemale.expand(FemaleGrowthWhenElementDisappears * mDeltaTime)
