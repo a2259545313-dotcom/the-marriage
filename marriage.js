@@ -28,7 +28,6 @@ var Gray = rgba(39, 39, 39, 1.0)
 
 var SplashBackgroundColor = Blue
 var BackgroundColors = [Blue, Purple, Pink, Green, Gray, Gray]
-var ClearColor = rgba(0, 0, 0, 0)
 
 // Elements
 
@@ -107,6 +106,11 @@ var LevelDuration = 60
 var Gender = {
 	Female: 0,
 	Male: 1
+}
+
+var Scene = {
+	Splash: 0,
+	Game: 1
 }
 
 var Direction = {
@@ -282,17 +286,19 @@ function Character (gender)
 	{
 		if(mEnding) return;
 
-		var characterRect = rect(
+		mContext.beginPath()
+		mContext.rect(
 			Math.floor(this.rect.x), 
 			Math.floor(this.rect.y), 
 			Math.floor(this.rect.width), 
 			Math.floor(this.rect.height)
-		) 
+		)
 
-		var fillColor = rgba(this.color.r, this.color.g, this.color.b, this.life)
-		var strokeColor = rgba(0, 0, 0, this.life)
-
-		drawRect(characterRect, fillColor, strokeColor)
+		mContext.fillStyle = rgbaToString(rgba(this.color.r, this.color.g, this.color.b, this.life))
+		mContext.fill()
+		mContext.lineWidth = 1
+		mContext.strokeStyle = rgbaToString(rgba(0, 0, 0, this.life))
+		mContext.stroke()
 	}
 
 	this.expand = function(amount)
@@ -371,11 +377,15 @@ function Element()
 
 	this.draw = function()
 	{
+		mContext.beginPath()
+		mContext.arc(this.circle.x, this.circle.y, this.circle.radius, 0, 2 * Math.PI)
+		
 		var alpha = (1 - this.fadeOutTime) * this.color.a
-		var fillColor = rgbaWithAlpha(this.color, alpha)
-		var strokeColor = rgba(0, 0, 0, alpha)
-
-		drawCircle(this.circle, fillColor, strokeColor)
+		mContext.fillStyle = rgbaToString(rgbaWithAlpha(this.color, alpha))
+		mContext.fill()
+		mContext.lineWidth = 1
+		mContext.strokeStyle = rgbaToString(rgba(0, 0, 0, alpha))
+		mContext.stroke()
 	}
 
 	this.disappear = function()
@@ -429,25 +439,26 @@ function Memory(type, position)
 
 	this.draw = function()
 	{
-		var fillColor = ClearColor
-		var strokeColor = rgba(255, 255, 255, 0.07 * this.alpha)
+		mContext.beginPath()
 
 		if(this.type == MemoryType.Square)
 		{
 			var Side = 12
-			var memoryRect = rect(
+			mContext.rect(
 				this.position.x - Side / 2, 
 				this.position.y - Side / 2, 
 				Side, 
 				Side)
-			
-			drawRect(memoryRect, fillColor, strokeColor)
 		}
 		else
 		{
-			var memoryCircle = circle(this.position.x, this.position.y, CircleMemoryRadius)
-			drawCircle(memoryCircle, fillColor, strokeColor)
+			
+			mContext.arc(this.position.x, this.position.y, CircleMemoryRadius, 0, 2 * Math.PI)
 		}
+
+		mContext.lineWidth = 1
+		mContext.strokeStyle = rgbaToString(rgba(255, 255, 255, 0.07 * this.alpha))
+		mContext.stroke()
 	}
 
 	this.destroy = function()
@@ -472,14 +483,15 @@ function MemoryBar()
 
 	this.draw = function()
 	{
-		var barRect = rect(
+		mContext.beginPath()
+		mContext.rect(
 			Math.floor(-0.5), 
 			Math.floor(mScreen.height - this.height),
 			Math.floor(mScreen.width + 1), 
 			Math.floor(this.height + 1)
 		)
-
-		var fillColor = rgba(255, 255, 255, 0.5)
+		mContext.fillStyle = rgbaToString(rgba(255, 255, 255, 0.5))
+		mContext.fill()
 	}
 
 	this.expand = function(amount)
@@ -509,7 +521,10 @@ function KissMemory(gender, center)
 	{
 		if(this.active)
 		{
-			drawRect(this.rect, this.color, ClearColor)			
+			mContext.beginPath()
+			mContext.fillStyle = rgbaToString(this.color)
+			mContext.rect(this.rect.x, this.rect.y, this.rect.width, this.rect.height)
+			mContext.fill()
 		}
 	}
 }
@@ -592,6 +607,8 @@ function logic()
 
 function draw()
 {	
+	mContext.clearRect(0, 0, mScreen.width, mScreen.height)
+	
 	drawBackground()
 
 	mMemoryBar.draw()
@@ -606,6 +623,16 @@ function draw()
 	drawSplash(1 - mCrossfadeTime)	
 
 	if(mGameOver) drawFadeOut()
+
+	/*
+	mContext.fillStyle = 'white'
+	mContext.font = '12pt Arial Black'
+	mContext.textAlign = 'left'
+	mContext.fillText(
+		'Female alpha ' + DEBUG_roundedDigits(mFemale.life) + 
+		' / Male alpha ' + DEBUG_roundedDigits(mMale.life) + '\n' + DEBUG_angle(), 
+		22, mScreen.height - 27)
+	*/
 }
 
 // Logic and drawing methods
@@ -663,15 +690,18 @@ function setup()
 
 function drawFadeOut()
 {
-	var fillColor = rgba(0,0,0,mGameOverTime)
-	var fadeOutRect = rect(-0.5, -0.5, mScreen.width, mScreen.height)
-	drawRect(fadeOutRect, fillColor, ClearColor)
+	mContext.beginPath()
+	mContext.fillStyle = rgbaToString(rgba(0,0,0,mGameOverTime))
+	mContext.rect(-0.5, -0.5, mScreen.width, mScreen.height)
+	mContext.fill()
 }
 
 function drawBackground()
 {
-	var backgroundRect = rect(-0.5, -0.5, mScreen.width, mScreen.height)
-	drawRect(backgroundRect, mBackgroundColor, ClearColor)
+	mContext.beginPath()
+	mContext.fillStyle = rgbaToString(mBackgroundColor)
+	mContext.rect(-0.5, -0.5, mScreen.width, mScreen.height)
+	mContext.fill()
 }
 
 function drawSplash(alpha)
@@ -679,16 +709,24 @@ function drawSplash(alpha)
 	if(alpha <= 0.0) return;
 
 	// Background
-	var backgroundColor = rgbaWithAlpha(SplashBackgroundColor, alpha)
-	drawRect(mScreen, backgroundColor, ClearColor)
-
-	// Text
-	var textColor = rgba(255, 255, 255, alpha)
-	var titlePosition = vector2(400, 255)
-	var creditsPosition = vector2(mScreen.width - 22, mScreen.height - 27)
+	mContext.beginPath()
+	mContext.rect(0, 0, mScreen.width, mScreen.height)
+	mContext.fillStyle = rgbaToString(rgbaWithAlpha(SplashBackgroundColor, alpha))
+	mContext.fill()
 	
-	drawText('The marriage', titlePosition, 25, 'center', textColor)
-	drawText('Rod Humble 2006', creditsPosition, 12,  'right', textColor)
+
+	//// Text
+	mContext.fillStyle = rgbaToString(rgba(255, 255, 255, alpha))
+	
+	// Title
+	mContext.font = '25pt Arial Black'
+	mContext.textAlign = 'center'
+	mContext.fillText('The marriage', 400, 255)
+
+	// Credits
+	mContext.font = '12pt Arial Black'
+	mContext.textAlign = 'right'
+	mContext.fillText('Rod Humble 2006', mScreen.width - 22, mScreen.height - 27)
 
 }
 
@@ -761,6 +799,8 @@ function endingLogic()
 {
 	var endingTimeElapsed = mGameTime - mEndingTime
 	var visibleElements = Math.floor((endingTimeElapsed / KissMemoryCreationInterval) * 2)
+	//console.log("ending time " + endingTimeElapsed)
+	//console.log("vE " + visibleElements)
 
 	var kissesOutsideScreen = 0
 
@@ -814,6 +854,25 @@ function randomDirection()
 
 
 // Debugging methods
+// To be deleted
+
+function DEBUG_drawRect(rect)
+{
+	mContext.beginPath()
+	mContext.strokeStyle = rgbaToString(rgba(0, 255, 0, 1.0))
+	mContext.rect(rect.x, rect.y, rect.width, rect.height)
+	mContext.stroke()
+}
+
+function DEBUG_drawRect(rect, color)
+{
+	mContext.beginPath()
+	mContext.strokeStyle = rgbaToString(rgba(0, 255, 0, 1.0))
+	mContext.fillStyle = rgbaToString(color)
+	mContext.rect(rect.x, rect.y, rect.width, rect.height)
+	mContext.fill()
+	mContext.stroke()
+}
 
 function DEBUG_roundedDigits(n)
 {

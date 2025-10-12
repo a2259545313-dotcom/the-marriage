@@ -46,8 +46,6 @@ function gameLoop()
 
 	//Implemented by the game
 	logic()
-
-	mContext.clearRect(0, 0, mScreen.width, mScreen.height)
 	draw()
 
 	lateLogic()
@@ -57,20 +55,12 @@ function gameLoop()
 function engineStart()
 {
 	mCanvas = document.getElementById('canvas')
-
-	// Support for HiDPI displays
-	var ratio = window.devicePixelRatio || 1
-	mScreen = rect(0, 0, 800, 600)
-	mCanvas.width = mScreen.width * ratio
-	mCanvas.height = mScreen.height * ratio
-	mCanvas.style.width = '' + mScreen.width + 'px'
-	mCanvas.style.height = '' + mScreen.height + 'px'
 	mCanvas.style.backgroundColor = 'black'
-
 	mContext = mCanvas.getContext('2d')
-	mContext.scale(ratio, ratio)
 	mContext.translate(0.5, 0.5)
-	
+	mScreen = rect(0, 0, 800, 600)
+
+
 	mStartTime = getTime()
 	mPrevFrameTime = getTime()
 	
@@ -107,43 +97,6 @@ function drawRect(x, y, width, height)
 	mContext.fill()
 }
 
-function drawRect(rect, fillColor, strokeColor)
-{
-	mContext.beginPath()
-	mContext.rect(rect.x, rect.y, rect.width, rect.height)
-	drawCurrentPath(fillColor, strokeColor)
-}
-
-function drawCircle(circle, fillColor, strokeColor)
-{
-	mContext.beginPath()
-	mContext.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI)
-	drawCurrentPath(fillColor, strokeColor)
-}
-
-function drawText(text, position, size, alignment, color)
-{
-	mContext.fillStyle = rgbaToString(color)
-	mContext.font = '' + size + 'pt Arial Black'
-	mContext.textAlign = alignment
-	mContext.fillText(text, position.x, position.y)
-}
-
-function drawCurrentPath(fillColor, strokeColor)
-{
-	if(fillColor.a != 0.0)
-	{
-		mContext.fillStyle = rgbaToString(fillColor)
-		mContext.fill()
-	}
-
-	if(strokeColor.a != 0.0) 
-	{
-		mContext.strokeStyle = rgbaToString(strokeColor)
-		mContext.stroke()
-	}
-}
-
 function earlyLogic()
 {
 	//// Time
@@ -157,6 +110,8 @@ function lateLogic()
 	mMouseClicked = false
 	mMouseMoved = false
 }
+
+
 
 function getTime()
 {
