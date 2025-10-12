@@ -15,16 +15,16 @@ GitHub: https://github.com/giacomopc/the-marriage
 
 //// Constants
 
-// Colors
+// Colors and change colors
 
-var FemaleColor = rgba(244, 94, 184, 1.0)
-var MaleColor = rgba(62, 83, 240, 1.0)
+var FemaleColor = rgba(0, 255, 251, 1)
+var MaleColor = rgba(255, 0, 0, 1)
 
-var Blue = rgba(86, 131, 178, 1.0)
-var Purple = rgba(147, 52, 199, 1.0)
-var Pink = rgba(203, 59, 200, 1.0)
-var Green = rgba(2, 197, 41, 1.0)
-var Gray = rgba(39, 39, 39, 1.0)
+var Blue = rgba(122, 154, 189, 1)
+var Purple = rgba(147, 52, 199, 1)
+var Pink = rgba(203, 59, 200, 1)
+var Green = rgba(2, 197, 41, 1)
+var Gray = rgba(39, 39, 39, 1)
 
 var SplashBackgroundColor = Blue
 var BackgroundColors = [Blue, Purple, Pink, Green, Gray, Gray]
@@ -187,7 +187,11 @@ function Character (gender)
 		// Mouse pointer touches character
 		if(isPointInsideRect(mMousePosition, this.rect))
 		{
-			mMale.expand(MaleGrowthSpeedOnCharacterTouch * mDeltaTime)
+			if(this.gender == Gender.Female){
+				mMale.expand(MaleGrowthSpeedOnCharacterTouch * mDeltaTime)
+			} else{
+				mFemale.expand(FemaleGrowthWhenElementDisappears * mDeltaTime)
+			}
 			attract()
 		}
 
@@ -324,10 +328,16 @@ function Character (gender)
 
 function Element()
 {
-	var x = randomInRange(ElementRadius, mScreen.width - ElementRadius)
-	var y = ElementRadius
+	// random circle sizes
+	var minRadius = 5
+	var maxRadius = 30
+	var Radius = randomInRange(minRadius, maxRadius)
+	var x = randomInRange(Radius, mScreen.width - Radius)
+	//randomInRange(ElementRadius, mScreen.width - ElementRadius)
+	var y = Radius
+	//ElementRadius
 
-	this.circle = circle(x, y, ElementRadius)
+	this.circle = circle(x, y, Radius)//ElementRadius
 	this.color = (mCurrentLevel == 5) ? BlackElement : randomObjectFromArray(ElementColors)
 	this.state = ElementState.Alive
 	this.fadeOutTime = 0
