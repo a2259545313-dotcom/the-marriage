@@ -21,11 +21,11 @@ var FemaleColor = rgba(0, 255, 251, 1)
 var MaleColor = rgba(255, 0, 0, 1)
 
 var Blue = rgba(122, 154, 189, 1)
-var Purple = rgba(147, 52, 199, 1)
-var Pink = rgba(203, 59, 200, 1)
-var Green = rgba(149, 227, 165, 0.99)
-var yellow = rgba(235, 232, 145, 1)
-var Gray = rgba(39, 39, 39, 1)
+var Purple = rgba(207, 169, 227, 1)
+var Pink = rgba(244, 163, 213, 1)
+var Green = rgba(80, 130, 18, 0.99)
+var yellow = rgba(152, 147, 3, 1)
+var Gray = rgba(81, 79, 79, 1)
 
 var SplashBackgroundColor = Blue
 var BackgroundColors = [Blue, Purple, Pink, Green, yellow, Gray]
