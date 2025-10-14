@@ -732,12 +732,12 @@ function drawSplash(alpha)
 	// Title
 	mContext.font = '25pt Arial Black'
 	mContext.textAlign = 'center'
-	mContext.fillText('The marriage Mod', 400, 255)
+	mContext.fillText('Modding the Marriage', 400, 255)
 
 	// Credits
 	mContext.font = '12pt Arial Black'
 	mContext.textAlign = 'right'
-	mContext.fillText('Rod Humble 2025', mScreen.width - 22, mScreen.height - 27)
+	mContext.fillText('Game mod 2025', mScreen.width - 22, mScreen.height - 27)
 
 }
 
